@@ -9,10 +9,10 @@ import (
 
 // Controller implements the user endpoints.
 type Controller interface {
-	CreateUser(ctx context.Context, user *entity.User)
-	GetUser(ctx context.Context, userID uuid.UUID)
-	UpdateUser(ctx context.Context, user *entity.User)
-	DeleteUser(ctx context.Context, userID uuid.UUID)
+	CreateUser(ctx context.Context, issue *entity.User) (*entity.User, error)
+	GetUser(ctx context.Context, issueID uuid.UUID) (*entity.User, error)
+	UpdateUser(ctx context.Context, issue *entity.User) (*entity.User, error)
+	DeleteUser(ctx context.Context, issueID uuid.UUID) (*entity.User, error)
 }
 
 type controller struct{}
@@ -27,25 +27,21 @@ func newController() *controller {
 }
 
 // CreateUser creates the given user.
-func (h *controller) CreateUser(ctx context.Context, user *entity.User) {
-	// TODO
-	return
+func (h *controller) CreateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
+	return nil, nil
 }
 
 // GetUser gets the user identified by the given userID.
-func (h *controller) GetUser(ctx context.Context, userID uuid.UUID) {
-	// TODO
-	return
+func (h *controller) GetUser(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
+	return nil, nil
 }
 
 // UpdateUser updates the given user.
-func (h *controller) UpdateUser(ctx context.Context, user *entity.User) {
-	// TODO
-	return
+func (h *controller) UpdateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
+	return nil, nil
 }
 
 // DeleteUser deletes the user identified by the given userID.
-func (h *controller) DeleteUser(ctx context.Context, userID uuid.UUID) {
-	// TODO
-	return
+func (h *controller) DeleteUser(ctx context.Context, userID uuid.UUID) (*entity.User, error) {
+	return nil, nil
 }
