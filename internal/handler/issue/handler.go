@@ -1,4 +1,4 @@
-package issues
+package issue
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Handler defines the issues endpoints.
+// Handler defines the issue endpoints.
 type Handler interface {
 	CreateIssue(http.ResponseWriter, *http.Request)
 	GetIssue(http.ResponseWriter, *http.Request)

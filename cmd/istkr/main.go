@@ -6,7 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/amckinney/issue-tracker/internal/handler/issues"
+	"github.com/amckinney/issue-tracker/internal/handler/issue"
+	"github.com/amckinney/issue-tracker/internal/handler/user"
 	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
@@ -23,8 +24,11 @@ func main() {
 	if err != nil {
 		exit(os.Stderr, err)
 	}
-	handler := issues.New(logger)
-	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router.New(handler)))
+	router := router.New(
+		issue.New(logger),
+		user.New(logger),
+	)
+	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router))
 }
 
 // exit writes out the error, and exits with a
