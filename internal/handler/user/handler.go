@@ -29,25 +29,25 @@ func newHandler(logger *zap.Logger) *handler {
 	}
 }
 
-// CreateUser creates an user according to the given request.
+// CreateUser creates a user according to the given request.
 func (h *handler) CreateUser(writer http.ResponseWriter, request *http.Request) {
 	// TODO
 	return
 }
 
-// GetUser gets an user according to the given request.
+// GetUser gets a user according to the given request.
 func (h *handler) GetUser(writer http.ResponseWriter, request *http.Request) {
 	// TODO
 	return
 }
 
-// UpdateUser updates an user according to the given request.
+// UpdateUser updates a user according to the given request.
 func (h *handler) UpdateUser(writer http.ResponseWriter, request *http.Request) {
 	// TODO
 	return
 }
 
-// DeleteUser deletes an user according to the given request.
+// DeleteUser deletes a user according to the given request.
 func (h *handler) DeleteUser(writer http.ResponseWriter, request *http.Request) {
 	// TODO
 	return
