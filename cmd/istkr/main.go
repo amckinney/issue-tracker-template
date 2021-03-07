@@ -6,30 +6,25 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/amckinney/issue-tracker/internal/handler/issues"
+	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
 
 const (
-	_localhost = "127.0.0.1"
+	_localhost   = "127.0.0.1"
 	_defaultPort = 3000
 )
 
 var _defaultAddress = fmt.Sprintf("%s:%d", _localhost, _defaultPort)
 
-func main () {
+func main() {
 	logger, err := zap.NewDevelopment()
 	if err != nil {
 		exit(os.Stderr, err)
 	}
-	_, err = newHandler(logger)
-	if err != nil {
-		exit(os.Stderr, err)
-	}
-	exit(os.Stderr, http.ListenAndServe(_defaultAddress, nil))
-}
-
-func newHandler(logger *zap.Logger) (*http.Handler, error) {
-	return nil, nil
+	handler := issues.New(logger)
+	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router.New(handler)))
 }
 
 // exit writes out the error, and exits with a
