@@ -13,9 +13,9 @@ func New(handler issues.Handler) *chi.Mux {
 		router.Post("/", handler.CreateIssue) // POST /issues
 
 		router.Route("/{issueID}", func(router chi.Router) {
-			router.Get("/", handler.GetIssue)       // GET /issues/123
-			router.Put("/", handler.UpdateIssue)    // PUT /issues/123
-			router.Delete("/", handler.DeleteIssue) // DELETE /issues/123
+			router.Get("/", handler.GetIssue)       // GET /issues/63d4876c-9d85-4c07-a28b-3c1c56a93153
+			router.Put("/", handler.UpdateIssue)    // PUT /issues/63d4876c-9d85-4c07-a28b-3c1c56a93153
+			router.Delete("/", handler.DeleteIssue) // DELETE /issues/63d4876c-9d85-4c07-a28b-3c1c56a93153
 		})
 	})
 	return router
