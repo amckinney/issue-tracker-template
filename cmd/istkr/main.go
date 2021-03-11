@@ -8,13 +8,18 @@ import (
 
 	"github.com/amckinney/issue-tracker/internal/handler/issue"
 	"github.com/amckinney/issue-tracker/internal/handler/user"
+	"github.com/amckinney/issue-tracker/internal/persist"
+	"github.com/amckinney/issue-tracker/internal/persist/sqlite"
+	"github.com/amckinney/issue-tracker/internal/persist/sqlite/migrate"
 	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
 
 const (
-	_localhost   = "127.0.0.1"
-	_defaultPort = 3000
+	_localhost              = "127.0.0.1"
+	_defaultPort            = 3000
+	_inMemorySource         = ":memory:"
+	_migrationSchemaVersion = 1
 )
 
 var _defaultAddress = fmt.Sprintf("%s:%d", _localhost, _defaultPort)
@@ -24,6 +29,22 @@ func main() {
 	if err != nil {
 		exit(os.Stderr, err)
 	}
+	db, err := sqlite.New(
+		&sqlite.Config{
+			Source: _inMemorySource,
+		},
+	)
+	if err != nil {
+		exit(os.Stderr, err)
+	}
+	if err := migrate.Migrate(db, _migrationSchemaVersion); err != nil {
+		exit(os.Stderr, err)
+	}
+	_, err = persist.NewSQL(db)
+	if err != nil {
+		exit(os.Stderr, err)
+	}
+	// Defer store.Close()
 	router := router.New(
 		issue.New(logger),
 		user.New(logger),

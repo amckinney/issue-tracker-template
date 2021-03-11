@@ -1,4 +1,4 @@
-package sqlite3
+package sqlite
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ type Config struct {
 	Source string
 }
 
-// New constructs a new database backed by SQLite3.
+// New constructs a new *sql.DB backed by SQLite3.
 func New(config *Config) (*sql.DB, error) {
 	if config == nil {
 		return nil, errors.New("received a nil sqlite3 configuration")
@@ -20,5 +20,9 @@ func New(config *Config) (*sql.DB, error) {
 	if config.Source == "" {
 		return nil, fmt.Errorf("sqlite3 requires a source")
 	}
-	return sql.Open("sqlite3", config.Source)
+	db, err := sql.Open("sqlite3", config.Source)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open sqlite3 database: %w", err)
+	}
+	return db, db.Ping()
 }

@@ -1,0 +1,12 @@
+BEGIN;
+
+CREATE TABLE issues (
+  entity_id   UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+  create_time TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+  update_time TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+  id          UUID UNIQUE NOT NULL,
+  title       TEXT UNIQUE NOT NULL,
+  body        TEXT NOT NULL
+);
+
+COMMIT;
