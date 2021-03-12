@@ -9,4 +9,12 @@ CREATE TABLE issues (
   body        TEXT NOT NULL
 );
 
+CREATE TABLE users (
+  entity_id   UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+  create_time TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+  update_time TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+  id          UUID UNIQUE NOT NULL,
+  username    TEXT UNIQUE NOT NULL,
+);
+
 COMMIT;
