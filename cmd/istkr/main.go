@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"os"
 
+	issuectrl "github.com/amckinney/issue-tracker/internal/controller/issue"
 	"github.com/amckinney/issue-tracker/internal/handler/issue"
 	"github.com/amckinney/issue-tracker/internal/handler/user"
 	"github.com/amckinney/issue-tracker/internal/persist"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite/migrate"
+	issuerepo "github.com/amckinney/issue-tracker/internal/repository/issue"
 	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
@@ -40,13 +42,19 @@ func main() {
 	if err := migrate.Migrate(db, _migrationSchemaVersion); err != nil {
 		exit(os.Stderr, err)
 	}
-	_, err = persist.NewSQL(db)
+	store, err := persist.NewSQL(db)
 	if err != nil {
 		exit(os.Stderr, err)
 	}
-	// Defer store.Close()
+	defer store.Close()
 	router := router.New(
-		issue.New(logger),
+		issue.New(
+			logger,
+			store,
+			issuectrl.New(
+				issuerepo.New(),
+			),
+		),
 		user.New(logger),
 	)
 	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router))

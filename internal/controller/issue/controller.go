@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/amckinney/issue-tracker/internal/entity"
+	"github.com/amckinney/issue-tracker/internal/repository/issue"
 	"github.com/gofrs/uuid"
 )
 
@@ -15,15 +16,19 @@ type Controller interface {
 	DeleteIssue(ctx context.Context, issueID uuid.UUID) (*entity.Issue, error)
 }
 
-type controller struct{}
-
-// New returns a new Controller.
-func New() Controller {
-	return newController()
+type controller struct {
+	repository issue.Repository
 }
 
-func newController() *controller {
-	return &controller{}
+// New returns a new Controller.
+func New(repository issue.Repository) Controller {
+	return newController(repository)
+}
+
+func newController(repository issue.Repository) *controller {
+	return &controller{
+		repository: repository,
+	}
 }
 
 // CreateIssue creates the given issue.
