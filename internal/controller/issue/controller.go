@@ -32,6 +32,12 @@ func (h *controller) CreateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*
 	if err != nil {
 		return nil, err
 	}
+	// TODO: The UUID generation is less than ideal.
+	entityID, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+	model.EntityID = entityID.String()
 	createdIssue, err := tx.CreateIssue(model)
 	if err != nil {
 		return nil, err

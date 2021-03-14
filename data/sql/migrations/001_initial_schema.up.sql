@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE issues (
   entity_id   TEXT PRIMARY KEY,
   create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -16,5 +14,3 @@ CREATE TABLE users (
   id          TEXT UNIQUE NOT NULL,
   username    TEXT UNIQUE NOT NULL
 );
-
-COMMIT;

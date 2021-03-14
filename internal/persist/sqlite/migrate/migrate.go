@@ -18,7 +18,7 @@ func Migrate(db *sql.DB, version uint) error {
 		return err
 	}
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://../../../../data/sql/migrations",
+		"file://data/sql/migrations", // Relative to the root of the binary.
 		"sqlite3",
 		driver,
 	)

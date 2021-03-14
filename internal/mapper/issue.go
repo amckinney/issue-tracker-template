@@ -16,12 +16,8 @@ func IssueFromAPI(issue *api.Issue) (*entity.Issue, error) {
 	if issue == nil {
 		return nil, errors.New("received a nil issue")
 	}
-	issueID, err := uuid.FromString(issue.ID)
-	if err != nil {
-		return nil, fmt.Errorf("id %q is not a valid uuid: %w", issue.ID, err)
-	}
 	return &entity.Issue{
-		ID:    issueID,
+		ID:    uuid.FromStringOrNil(issue.ID),
 		Title: issue.Title,
 		Body:  issue.Body,
 	}, nil

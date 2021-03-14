@@ -54,6 +54,7 @@ func main() {
 		),
 		user.New(logger),
 	)
+	logger.Info("Server successfully started")
 	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router))
 }
 

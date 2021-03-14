@@ -18,7 +18,7 @@ func (s *sqlReadTx) GetIssue(issueID string) (*model.Issue, error) {
 		"issues",
 	).Where(
 		squirrel.Eq{
-			"issues.id": issueID,
+			"id": issueID,
 		},
 	)
 	return s.querySingleIssue(query)

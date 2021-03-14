@@ -46,6 +46,7 @@ func (h *handler) CreateIssue(writer http.ResponseWriter, request *http.Request)
 	issue, err := issueFromRequest(request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 	var createdIssue *entity.Issue
 	if err := h.store.ReadWrite(
@@ -73,6 +74,7 @@ func (h *handler) GetIssue(writer http.ResponseWriter, request *http.Request) {
 	issueID, err := issueIDFromRequest(request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 	var gotIssue *entity.Issue
 	if err := h.store.ReadWrite(
@@ -102,6 +104,7 @@ func (h *handler) UpdateIssue(writer http.ResponseWriter, request *http.Request)
 	issue, err := issueFromRequest(request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 	var updatedIssue *entity.Issue
 	if err := h.store.ReadWrite(
@@ -129,6 +132,7 @@ func (h *handler) DeleteIssue(writer http.ResponseWriter, request *http.Request)
 	issueID, err := issueIDFromRequest(request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
 	}
 	var gotIssue *entity.Issue
 	if err := h.store.ReadWrite(
@@ -154,11 +158,11 @@ func (h *handler) DeleteIssue(writer http.ResponseWriter, request *http.Request)
 // issueFromRequest maps the given *http.Request into
 // an *entity.Issue.
 func issueFromRequest(request *http.Request) (*entity.Issue, error) {
-	var apiIssue *api.Issue
-	if err := json.NewDecoder(request.Body).Decode(apiIssue); err != nil {
+	var apiIssue api.Issue
+	if err := json.NewDecoder(request.Body).Decode(&apiIssue); err != nil {
 		return nil, err
 	}
-	return mapper.IssueFromAPI(apiIssue)
+	return mapper.IssueFromAPI(&apiIssue)
 }
 
 // issueIDFromRequest maps the given *http.Request into
@@ -178,6 +182,5 @@ func writeIssue(writer http.ResponseWriter, issue *entity.Issue) error {
 		return err
 	}
 	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
 	return nil
 }
