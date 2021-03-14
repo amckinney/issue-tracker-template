@@ -12,7 +12,6 @@ import (
 	"github.com/amckinney/issue-tracker/internal/persist"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite/migrate"
-	issuerepo "github.com/amckinney/issue-tracker/internal/repository/issue"
 	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
@@ -51,9 +50,7 @@ func main() {
 		issue.New(
 			logger,
 			store,
-			issuectrl.New(
-				issuerepo.New(),
-			),
+			issuectrl.New(),
 		),
 		user.New(logger),
 	)

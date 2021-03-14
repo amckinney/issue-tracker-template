@@ -9,6 +9,8 @@ import (
 	"github.com/amckinney/issue-tracker/internal/entity"
 	"github.com/amckinney/issue-tracker/internal/mapper"
 	"github.com/amckinney/issue-tracker/internal/persist"
+	"github.com/go-chi/chi"
+	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
 )
 
@@ -45,13 +47,21 @@ func (h *handler) CreateIssue(writer http.ResponseWriter, request *http.Request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 	}
-	// Create the transaction.
-	created, err := h.controller.CreateIssue(request.Context(), issue)
-	if err != nil {
+	var createdIssue *entity.Issue
+	if err := h.store.ReadWrite(
+		request.Context(),
+		func(tx persist.ReadWriteTx) error {
+			createdIssue, err = h.controller.CreateIssue(tx, issue)
+			return err
+		},
+	); err != nil {
+		// TODO: We need to correctly handle error codes here.
+		//       Not all errors should be handled as internal
+		//       server errors.
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := writeIssue(writer, created); err != nil {
+	if err := writeIssue(writer, createdIssue); err != nil {
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -60,19 +70,82 @@ func (h *handler) CreateIssue(writer http.ResponseWriter, request *http.Request)
 
 // GetIssue gets an issue according to the given request.
 func (h *handler) GetIssue(writer http.ResponseWriter, request *http.Request) {
-	// TODO
+	issueID, err := issueIDFromRequest(request)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+	var gotIssue *entity.Issue
+	if err := h.store.ReadWrite(
+		request.Context(),
+		func(tx persist.ReadWriteTx) error {
+			gotIssue, err = h.controller.GetIssue(tx, issueID)
+			return err
+		},
+	); err != nil {
+		// TODO: We need to correctly handle error codes here.
+		//       Not all errors should be handled as internal
+		//       server errors.
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := writeIssue(writer, gotIssue); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	return
 }
 
 // UpdateIssue updates an issue according to the given request.
 func (h *handler) UpdateIssue(writer http.ResponseWriter, request *http.Request) {
-	// TODO
+	issue, err := issueFromRequest(request)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+	var updatedIssue *entity.Issue
+	if err := h.store.ReadWrite(
+		request.Context(),
+		func(tx persist.ReadWriteTx) error {
+			updatedIssue, err = h.controller.UpdateIssue(tx, issue)
+			return err
+		},
+	); err != nil {
+		// TODO: We need to correctly handle error codes here.
+		//       Not all errors should be handled as internal
+		//       server errors.
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := writeIssue(writer, updatedIssue); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	return
 }
 
 // DeleteIssue deletes an issue according to the given request.
 func (h *handler) DeleteIssue(writer http.ResponseWriter, request *http.Request) {
-	// TODO
+	issueID, err := issueIDFromRequest(request)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+	}
+	var gotIssue *entity.Issue
+	if err := h.store.ReadWrite(
+		request.Context(),
+		func(tx persist.ReadWriteTx) error {
+			gotIssue, err = h.controller.DeleteIssue(tx, issueID)
+			return err
+		},
+	); err != nil {
+		// TODO: We need to correctly handle error codes here.
+		//       Not all errors should be handled as internal
+		//       server errors.
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if err := writeIssue(writer, gotIssue); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	return
 }
 
@@ -84,6 +157,13 @@ func issueFromRequest(request *http.Request) (*entity.Issue, error) {
 		return nil, err
 	}
 	return mapper.IssueFromAPI(apiIssue)
+}
+
+// issueIDFromRequest maps the given *http.Request into
+// an issueID, represented as a UUID.
+func issueIDFromRequest(request *http.Request) (uuid.UUID, error) {
+	issueID := chi.URLParam(request, "issueID")
+	return uuid.FromString(issueID)
 }
 
 // writeIssue writes the given *entity.Issue to the given http.ResponseWriter.
