@@ -32,7 +32,7 @@ func main() {
 	}
 	db, err := sqlite.New(
 		&sqlite.Config{
-			Source: _inMemorySource,
+			Source: "data/sql/db.sql",
 		},
 	)
 	if err != nil {

@@ -23,28 +23,31 @@ func (s *sqlReadTx) CreateIssue(issue *model.Issue) (*model.Issue, error) {
 		issue.Body,
 	)
 	fmt.Println("Writing issue with ID", issue.ID)
-	rows, err := insertQuery.QueryContext(s.ctx)
+	result, err := insertQuery.ExecContext(s.ctx)
 	if err != nil {
 		return nil, err
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
+	if affected, err := result.RowsAffected(); err != nil || affected == 0 {
+		return nil, fmt.Errorf("expected exactly one row to be affected, but had %d affected", affected)
 	}
-	return &model.Issue{
-		ID:    "a9eae375-d98b-4d9b-a39d-6683a7cfb263",
-		Title: "Foo",
-		Body:  "Bar",
-	}, nil
-	//selectQuery := s.statementBuilder.Select(
-	//"*",
-	//).From(
-	//"issues",
-	//).Where(
-	//squirrel.Eq{
-	//"id": issue.ID,
-	//},
-	//)
-	//return s.querySingleIssue(selectQuery)
+	//if err := rows.Close(); err != nil {
+	//return nil, err
+	//}
+	//return &model.Issue{
+	//ID:    "a9eae375-d98b-4d9b-a39d-6683a7cfb263",
+	//Title: "Foo",
+	//Body:  "Bar",
+	//}, nil
+	selectQuery := s.statementBuilder.Select(
+		"*",
+	).From(
+		"issues",
+	).Where(
+		squirrel.Eq{
+			"id": issue.ID,
+		},
+	)
+	return s.querySingleIssue(selectQuery)
 }
 
 // UpdateIssue updates the given issue.
