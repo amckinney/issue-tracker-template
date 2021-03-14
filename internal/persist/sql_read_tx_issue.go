@@ -1,6 +1,8 @@
 package persist
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/Masterminds/squirrel"
@@ -19,13 +21,25 @@ func (s *sqlReadTx) GetIssue(issueID string) (*model.Issue, error) {
 			"issues.id": issueID,
 		},
 	)
-	rows, err := query.QueryContext(s.ctx)
+	return s.querySingleIssue(query)
+}
+
+// querier is used to generalize a variety of query commands
+// under a common interface.
+type querier interface {
+	QueryContext(context.Context) (*sql.Rows, error)
+}
+
+// querySingleIssue executes the given querier and returns the
+// associated issue.
+func (s *sqlReadTx) querySingleIssue(querier querier) (*model.Issue, error) {
+	rows, err := querier.QueryContext(s.ctx)
 	if err != nil {
 		return nil, err
 	}
 	if !rows.Next() {
 		return nil, multierr.Append(
-			fmt.Errorf("issue with ID %q does not exist", issueID),
+			fmt.Errorf("issue querier returned no results"),
 			rows.Close(),
 		)
 	}
