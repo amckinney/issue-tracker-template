@@ -2,6 +2,7 @@ package issue
 
 import (
 	"github.com/amckinney/issue-tracker/internal/entity"
+	"github.com/amckinney/issue-tracker/internal/mapper"
 	"github.com/amckinney/issue-tracker/internal/persist"
 	"github.com/gofrs/uuid"
 )
@@ -27,20 +28,44 @@ func newController() *controller {
 
 // CreateIssue creates the given issue.
 func (h *controller) CreateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
-	return nil, nil
+	model, err := mapper.IssueToModel(issue)
+	if err != nil {
+		return nil, err
+	}
+	createdIssue, err := tx.CreateIssue(model)
+	if err != nil {
+		return nil, err
+	}
+	return mapper.IssueFromModel(createdIssue)
 }
 
 // GetIssue gets the issue identified by the given issueID.
 func (h *controller) GetIssue(tx persist.ReadTx, issueID uuid.UUID) (*entity.Issue, error) {
-	return nil, nil
+	gotIssue, err := tx.GetIssue(issueID.String())
+	if err != nil {
+		return nil, err
+	}
+	return mapper.IssueFromModel(gotIssue)
 }
 
 // UpdateIssue updates the given issue.
 func (h *controller) UpdateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
-	return nil, nil
+	model, err := mapper.IssueToModel(issue)
+	if err != nil {
+		return nil, err
+	}
+	updatedIssue, err := tx.UpdateIssue(model)
+	if err != nil {
+		return nil, err
+	}
+	return mapper.IssueFromModel(updatedIssue)
 }
 
 // DeleteIssue deletes the issue identified by the given issueID.
 func (h *controller) DeleteIssue(tx persist.ReadWriteTx, issueID uuid.UUID) (*entity.Issue, error) {
-	return nil, nil
+	deletedIssue, err := tx.DeleteIssue(issueID.String())
+	if err != nil {
+		return nil, err
+	}
+	return mapper.IssueFromModel(deletedIssue)
 }

@@ -97,6 +97,8 @@ func (h *handler) GetIssue(writer http.ResponseWriter, request *http.Request) {
 
 // UpdateIssue updates an issue according to the given request.
 func (h *handler) UpdateIssue(writer http.ResponseWriter, request *http.Request) {
+	// Grab the issueID from the query param and validate that it
+	// matches the issue contained in the body.
 	issue, err := issueFromRequest(request)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadRequest)
