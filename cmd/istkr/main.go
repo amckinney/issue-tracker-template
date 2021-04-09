@@ -8,7 +8,6 @@ import (
 
 	issuectrl "github.com/amckinney/issue-tracker/internal/controller/issue"
 	"github.com/amckinney/issue-tracker/internal/handler/issue"
-	"github.com/amckinney/issue-tracker/internal/handler/user"
 	"github.com/amckinney/issue-tracker/internal/persist"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite"
 	"github.com/amckinney/issue-tracker/internal/persist/sqlite/migrate"
@@ -52,7 +51,6 @@ func main() {
 			store,
 			issuectrl.New(),
 		),
-		user.New(logger),
 	)
 	logger.Info("Server successfully started")
 	exit(os.Stderr, http.ListenAndServe(_defaultAddress, router))

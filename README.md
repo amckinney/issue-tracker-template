@@ -5,4 +5,4 @@ course.
 
 ## Required dependencies
 
-$ brew install sqlite3
+* SQLite3

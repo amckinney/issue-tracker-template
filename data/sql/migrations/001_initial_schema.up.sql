@@ -6,11 +6,3 @@ CREATE TABLE issues (
   title       TEXT UNIQUE NOT NULL,
   body        TEXT NOT NULL
 );
-
-CREATE TABLE users (
-  entity_id   TEXT PRIMARY KEY,
-  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  id          TEXT UNIQUE NOT NULL,
-  username    TEXT UNIQUE NOT NULL
-);

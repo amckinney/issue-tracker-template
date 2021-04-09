@@ -30,14 +30,6 @@ func (s *sqlReadTx) CreateIssue(issue *model.Issue) (*model.Issue, error) {
 	if affected, err := result.RowsAffected(); err != nil || affected == 0 {
 		return nil, fmt.Errorf("expected exactly one row to be affected, but had %d affected", affected)
 	}
-	//if err := rows.Close(); err != nil {
-	//return nil, err
-	//}
-	//return &model.Issue{
-	//ID:    "a9eae375-d98b-4d9b-a39d-6683a7cfb263",
-	//Title: "Foo",
-	//Body:  "Bar",
-	//}, nil
 	selectQuery := s.statementBuilder.Select(
 		"*",
 	).From(
@@ -51,10 +43,6 @@ func (s *sqlReadTx) CreateIssue(issue *model.Issue) (*model.Issue, error) {
 }
 
 // UpdateIssue updates the given issue.
-//
-// TODO: This is an all-or-nothing update.
-// We should dynamically append values
-// only if they are explicitly set.
 func (s *sqlReadTx) UpdateIssue(issue *model.Issue) (*model.Issue, error) {
 	updateQuery := s.statementBuilder.Update(
 		"issues",
