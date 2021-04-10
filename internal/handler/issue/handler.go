@@ -8,7 +8,7 @@ import (
 	"github.com/amckinney/issue-tracker/internal/controller/issue"
 	"github.com/amckinney/issue-tracker/internal/entity"
 	"github.com/amckinney/issue-tracker/internal/mapper"
-	"github.com/amckinney/issue-tracker/internal/persist"
+	"github.com/amckinney/issue-tracker/internal/store"
 	"github.com/go-chi/chi"
 	"github.com/gofrs/uuid"
 	"go.uber.org/zap"
@@ -24,16 +24,16 @@ type Handler interface {
 
 type handler struct {
 	logger     *zap.Logger
-	store      persist.Store
+	store      store.Store
 	controller issue.Controller
 }
 
 // New returns a new Handler.
-func New(logger *zap.Logger, store persist.Store, controller issue.Controller) Handler {
+func New(logger *zap.Logger, store store.Store, controller issue.Controller) Handler {
 	return newHandler(logger, store, controller)
 }
 
-func newHandler(logger *zap.Logger, store persist.Store, controller issue.Controller) *handler {
+func newHandler(logger *zap.Logger, store store.Store, controller issue.Controller) *handler {
 	return &handler{
 		logger:     logger,
 		store:      store,
@@ -51,7 +51,7 @@ func (h *handler) CreateIssue(writer http.ResponseWriter, request *http.Request)
 	var createdIssue *entity.Issue
 	if err := h.store.ReadWrite(
 		request.Context(),
-		func(tx persist.ReadWriteTx) error {
+		func(tx store.ReadWriteTx) error {
 			createdIssue, err = h.controller.CreateIssue(tx, issue)
 			return err
 		},
@@ -79,7 +79,7 @@ func (h *handler) GetIssue(writer http.ResponseWriter, request *http.Request) {
 	var gotIssue *entity.Issue
 	if err := h.store.ReadWrite(
 		request.Context(),
-		func(tx persist.ReadWriteTx) error {
+		func(tx store.ReadWriteTx) error {
 			gotIssue, err = h.controller.GetIssue(tx, issueID)
 			return err
 		},
@@ -109,7 +109,7 @@ func (h *handler) UpdateIssue(writer http.ResponseWriter, request *http.Request)
 	var updatedIssue *entity.Issue
 	if err := h.store.ReadWrite(
 		request.Context(),
-		func(tx persist.ReadWriteTx) error {
+		func(tx store.ReadWriteTx) error {
 			updatedIssue, err = h.controller.UpdateIssue(tx, issue)
 			return err
 		},
@@ -137,7 +137,7 @@ func (h *handler) DeleteIssue(writer http.ResponseWriter, request *http.Request)
 	var gotIssue *entity.Issue
 	if err := h.store.ReadWrite(
 		request.Context(),
-		func(tx persist.ReadWriteTx) error {
+		func(tx store.ReadWriteTx) error {
 			gotIssue, err = h.controller.DeleteIssue(tx, issueID)
 			return err
 		},

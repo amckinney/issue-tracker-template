@@ -1,4 +1,4 @@
-package persist
+package store
 
 import "github.com/amckinney/issue-tracker/internal/model"
 

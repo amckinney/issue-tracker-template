@@ -8,9 +8,9 @@ import (
 
 	issuectrl "github.com/amckinney/issue-tracker/internal/controller/issue"
 	"github.com/amckinney/issue-tracker/internal/handler/issue"
-	"github.com/amckinney/issue-tracker/internal/persist"
-	"github.com/amckinney/issue-tracker/internal/persist/sqlite"
-	"github.com/amckinney/issue-tracker/internal/persist/sqlite/migrate"
+	"github.com/amckinney/issue-tracker/internal/store"
+	"github.com/amckinney/issue-tracker/internal/store/sqlite"
+	"github.com/amckinney/issue-tracker/internal/store/sqlite/migrate"
 	"github.com/amckinney/issue-tracker/internal/router"
 	"go.uber.org/zap"
 )
@@ -39,7 +39,7 @@ func main() {
 	if err := migrate.Migrate(db, _migrationSchemaVersion); err != nil {
 		exit(os.Stderr, err)
 	}
-	store, err := persist.NewSQL(db)
+	store, err := store.NewSQL(db)
 	if err != nil {
 		exit(os.Stderr, err)
 	}

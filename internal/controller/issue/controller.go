@@ -3,16 +3,16 @@ package issue
 import (
 	"github.com/amckinney/issue-tracker/internal/entity"
 	"github.com/amckinney/issue-tracker/internal/mapper"
-	"github.com/amckinney/issue-tracker/internal/persist"
+	"github.com/amckinney/issue-tracker/internal/store"
 	"github.com/gofrs/uuid"
 )
 
 // Controller implements the issue tracker business logic.
 type Controller interface {
-	CreateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error)
-	GetIssue(tx persist.ReadTx, issueID uuid.UUID) (*entity.Issue, error)
-	UpdateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error)
-	DeleteIssue(tx persist.ReadWriteTx, issueID uuid.UUID) (*entity.Issue, error)
+	CreateIssue(tx store.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error)
+	GetIssue(tx store.ReadTx, issueID uuid.UUID) (*entity.Issue, error)
+	UpdateIssue(tx store.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error)
+	DeleteIssue(tx store.ReadWriteTx, issueID uuid.UUID) (*entity.Issue, error)
 }
 
 type controller struct{}
@@ -27,7 +27,7 @@ func newController() *controller {
 }
 
 // CreateIssue creates the given issue.
-func (h *controller) CreateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
+func (h *controller) CreateIssue(tx store.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
 	model, err := mapper.IssueToModel(issue)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (h *controller) CreateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*
 }
 
 // GetIssue gets the issue identified by the given issueID.
-func (h *controller) GetIssue(tx persist.ReadTx, issueID uuid.UUID) (*entity.Issue, error) {
+func (h *controller) GetIssue(tx store.ReadTx, issueID uuid.UUID) (*entity.Issue, error) {
 	gotIssue, err := tx.GetIssue(issueID.String())
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (h *controller) GetIssue(tx persist.ReadTx, issueID uuid.UUID) (*entity.Iss
 }
 
 // UpdateIssue updates the given issue.
-func (h *controller) UpdateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
+func (h *controller) UpdateIssue(tx store.ReadWriteTx, issue *entity.Issue) (*entity.Issue, error) {
 	model, err := mapper.IssueToModel(issue)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (h *controller) UpdateIssue(tx persist.ReadWriteTx, issue *entity.Issue) (*
 }
 
 // DeleteIssue deletes the issue identified by the given issueID.
-func (h *controller) DeleteIssue(tx persist.ReadWriteTx, issueID uuid.UUID) (*entity.Issue, error) {
+func (h *controller) DeleteIssue(tx store.ReadWriteTx, issueID uuid.UUID) (*entity.Issue, error) {
 	deletedIssue, err := tx.DeleteIssue(issueID.String())
 	if err != nil {
 		return nil, err

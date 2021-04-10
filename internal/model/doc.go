@@ -1,4 +1,4 @@
-// Package model defines the persistence
+// Package model defines the storage
 // model entities used in the Issue Tracker
 // application's business logic.
 //
@@ -6,14 +6,14 @@
 // to the internal entities, but they are
 // intentionally decoupled so that the
 // business logic objects do not take
-// on persistence-level concerns, such
+// on storage-level concerns, such
 // as a database record's primary key.
 //
 // Similar to the justification for
 // decoupling the API types from the
 // entity types, the decoupling between
 // the entity package and the model package
-// makes it easier to swap out persistence
+// makes it easier to swap out storage
 // technologies, such as PostgresSQL, MongoDB,
 // and others.
 package model

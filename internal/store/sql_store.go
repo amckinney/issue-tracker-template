@@ -1,4 +1,4 @@
-package persist
+package store
 
 import (
 	"context"
@@ -14,7 +14,7 @@ type sqlStore struct {
 	statementBuilder squirrel.StatementBuilderType
 }
 
-// NewSQL returns a new persist.DB backed by *sql.DB.
+// NewSQL returns a new store.DB backed by *sql.DB.
 func NewSQL(db *sql.DB) (Store, error) {
 	return &sqlStore{
 		db:               db,
