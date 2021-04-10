@@ -22,7 +22,6 @@ func (s *sqlReadTx) CreateIssue(issue *model.Issue) (*model.Issue, error) {
 		issue.Title,
 		issue.Body,
 	)
-	fmt.Println("Writing issue with ID", issue.ID)
 	result, err := insertQuery.ExecContext(s.ctx)
 	if err != nil {
 		return nil, err

@@ -25,8 +25,7 @@ func Migrate(db *sql.DB, version uint) error {
 	if err != nil {
 		return err
 	}
-	err = m.Migrate(version)
-	if err != nil && err != migrate.ErrNoChange {
+	if err := m.Migrate(version); err != nil && err != migrate.ErrNoChange {
 		return err
 	}
 	return nil

@@ -18,7 +18,6 @@ import (
 const (
 	_localhost              = "127.0.0.1"
 	_defaultPort            = 3000
-	_inMemorySource         = ":memory:"
 	_migrationSchemaVersion = 1
 )
 
